@@ -17,3 +17,7 @@ A server must return JSON from GET requests in the following format:
     	"container": "ID of container element to update",
     	"content": "HTML string"
     }
+
+## Compatibility
+
+Browser shims for modern browser functionality are not included in this project.
