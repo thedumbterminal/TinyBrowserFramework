@@ -47,6 +47,9 @@ TBF.prototype._elementActivated = function(ele){
 		})
 		.then(function(json){
 			self._handleResponse(json);
+		})
+		.catch(function(error) {
+			throw error
 		});
 };
 
