@@ -4,9 +4,9 @@
 
 ### Client
 
-All clickable elements will be augmented if the `data-url` property is set. The value is the server URL where the request to handle the action resides.
+Forms are augmented automatically using their action URLs.
 
-Extra GET parameters can be specified with further data properties.
+Other clickable elements will be augmented if the `data-url` property is set. The value is the server URL where a GET request to handle the action resides.
 
 ### Server
 
@@ -21,3 +21,7 @@ A server must return JSON from GET requests in the following format:
 ## Compatibility
 
 Browser shims for modern browser functionality are not included in this project.
+
+## Todo
+
+* Implement more actionable elements, such as images, tick boxes or links etc.

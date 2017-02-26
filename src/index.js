@@ -6,42 +6,46 @@ var TBF = function(){
 
 TBF.prototype._augmentInterface = function(){
 	var tags = document.getElementsByTagName('BUTTON');
-	//console.log(tags);
 	for(var i = 0; i < tags.length; i++){
-		this._augmentElement(tags.item(i))
+		this._augmentButton(tags.item(i));
 	}
+	tags = document.getElementsByTagName('FORM');
+	for(var i = 0; i < tags.length; i++){
+		this._augmentForm(tags.item(i))
+	}
+
 };
 
-TBF.prototype._augmentElement = function(ele){
+TBF.prototype._augmentButton = function(ele){
 	if(!ele.dataset.url){
 		return;
 	}
-	if(ele.onclick){
-		return
+	if(ele.onclick){	// already done
+		return;
 	}
-	console.log('augmenting element: ', ele);
+	console.log('augmenting button: ', ele);
 	var self = this;
 	ele.onclick = function(){
 		self._elementActivated(ele);
 	}
 };
 
-TBF.prototype._objToParams = function(obj){
-	var keys = Object.keys(obj);
-	var wanted = keys.filter(function(item){
-		return item !== 'url';
-	});
-	var pairs = wanted.map(function(item){
-		return item + '=' + window.encodeURIComponent(obj[item]); 
-	});
-	return pairs.join('&');
+TBF.prototype._augmentForm = function(ele){
+	if(ele.onsubmit){	// already done
+		return;
+	}
+	console.log('augmenting form: ', ele);
+	var self = this;
+	ele.onsubmit = function(){
+		self._elementActivated(ele);
+		return false;
+	}
 };
 
 TBF.prototype._elementActivated = function(ele){
-	console.log('element activated:', ele.id);
-	var params = this._objToParams(ele.dataset);
+	console.log('element activated:', ele);
 	var self = this;
-	fetch(ele.dataset.url + '?' + params)
+	fetch(this._getActionURL(ele))
 		.then(function(response){
 			return response.json();
 		})
@@ -51,6 +55,16 @@ TBF.prototype._elementActivated = function(ele){
 		.catch(function(error) {
 			throw error
 		});
+};
+
+TBF.prototype._getActionURL = function(ele){
+	if(ele.tagName === 'BUTTON'){
+		return ele.dataset.url;
+	}
+	else if(ele.tagName === "FORM"){
+		return ele.action;
+	}
+	throw new Error('Unknown element type');
 };
 
 TBF.prototype._handleResponse = function(json){
@@ -77,11 +91,9 @@ TBF.prototype._handleResponse = function(json){
 TBF.prototype._setupListeners = function(){
 	var self = this;
 	document.addEventListener('DOMContentLoaded', function(event) {
-		//console.log('DOM fully loaded and parsed');
 		self._augmentInterface();
 	});
 	document.addEventListener('DOMSubtreeModified', function(event) {
-		//console.log('DOM sub tree loaded');
 		self._augmentInterface();
 	});
 };
