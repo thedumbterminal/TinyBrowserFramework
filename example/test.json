@@ -1,0 +1,5 @@
+{
+	"action": "append",
+	"container": "output",
+	"content": "<button data-url=\"test.json\">button 2</button>"
+}
