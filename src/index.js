@@ -45,9 +45,14 @@ TBF.prototype._augmentForm = function(ele){
 TBF.prototype._elementActivated = function(ele){
 	console.log('element activated:', ele);
 	var self = this;
-	fetch(this._getActionURL(ele))
+	fetch(this._getActionURL(ele), {
+		credentials: 'same-origin'
+	})
 		.then(function(response){
-			return response.json();
+			if(response.ok){
+				return response.json();
+			}
+			throw new Error('Network response was not ok.');
 		})
 		.then(function(json){
 			self._handleResponse(json);
@@ -61,8 +66,14 @@ TBF.prototype._getActionURL = function(ele){
 	if(ele.tagName === 'BUTTON'){
 		return ele.dataset.url;
 	}
-	else if(ele.tagName === "FORM"){
-		return ele.action;
+	else if(ele.tagName === 'FORM'){
+		var kvPairs = [];
+		for(var i = 0; i < ele.elements.length; i++){
+			var e = ele.elements[i];
+			kvPairs.push(encodeURIComponent(e.name) + '=' + encodeURIComponent(e.value));
+		}
+		var queryString = kvPairs.join('&');
+		return ele.action + '?' + queryString;
 	}
 	throw new Error('Unknown element type');
 };

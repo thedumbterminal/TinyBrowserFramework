@@ -25,3 +25,5 @@ Browser shims for modern browser functionality are not included in this project.
 ## Todo
 
 * Implement more actionable elements, such as images, tick boxes or links etc.
+* Use websocket for all changes.
+* Add example for a related DOM change.
