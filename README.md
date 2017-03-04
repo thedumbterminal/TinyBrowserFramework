@@ -12,15 +12,18 @@ Other clickable elements will be augmented if the `data-url` property is set. Th
 
 A server must return JSON from GET requests in the following format:
 
-    {
+    [{
     	"action": "append|replace",
     	"container": "ID of container element to update",
     	"content": "HTML string"
-    }
+    ]}
 
 ## Compatibility
 
 Browser shims for modern browser functionality are not included in this project.
+
+* Array.prototype.forEach
+* Websockets
 
 ## Todo
 

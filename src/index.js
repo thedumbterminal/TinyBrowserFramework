@@ -2,6 +2,18 @@
 
 var TBF = function(){
 	this._setupListeners();
+	this._setupWebsocket();
+};
+
+TBF.prototype._setupWebsocket = function(){
+	this._websocket = new WebSocket('ws://localhost:3000/websocket');
+	var self = this;
+	this._websocket.onmessage = function(event){
+		var jsons = JSON.parse(event.data);
+		jsons.forEach(function(json){
+			self._handleResponse(json);
+		})
+	};
 };
 
 TBF.prototype._augmentInterface = function(){
@@ -45,21 +57,7 @@ TBF.prototype._augmentForm = function(ele){
 TBF.prototype._elementActivated = function(ele){
 	console.log('element activated:', ele);
 	var self = this;
-	fetch(this._getActionURL(ele), {
-		credentials: 'same-origin'
-	})
-		.then(function(response){
-			if(response.ok){
-				return response.json();
-			}
-			throw new Error('Network response was not ok.');
-		})
-		.then(function(json){
-			self._handleResponse(json);
-		})
-		.catch(function(error) {
-			throw error
-		});
+	this._websocket.send(this._getActionURL(ele));
 };
 
 TBF.prototype._getActionURL = function(ele){
