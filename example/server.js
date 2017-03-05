@@ -1,4 +1,5 @@
 'use strict'
+//Server for demo application
 
 const session = require('express-session')
 const express = require('express')
@@ -6,8 +7,7 @@ const url = require('url')
 const qs = require('qs')
 const http = require('http')
 const WebSocket = require('ws')
-//const staticGzip = require('static-gzip')
-var compression = require('compression')
+const compression = require('compression')
 
 const app = express()
 
@@ -19,17 +19,22 @@ const sessionHandler = session({
 
 app.use(compression())
 app.use(sessionHandler)
+app.use(express.static('dist'))
 
-const server = http.createServer(app);
+const server = http.createServer(app)
 
 const wss = new WebSocket.Server({
 	server: server,
 	path: '/websocket'
 })
 
-app.use(express.static('dist'))
+server.listen(3000, () => {
+	console.log('Listening on %d', server.address().port)
+});
 
-app.get('/', function(req, res, next){
+//Return the starting HTML to the client
+//Just inlined it here as this is just an example server.
+app.get('/', (req, res, next) => {
 	const response = `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -45,6 +50,7 @@ app.get('/', function(req, res, next){
 				<div class="page-header">
 					<h1>Todo Example</h1>
 				</div>
+				<div id="count">${renderTodoCount(req.session)}</div>
 				<ul id="lists" class="list-group">
 					${renderTodos(req.session)}
 				</ul>
@@ -66,47 +72,44 @@ app.get('/', function(req, res, next){
 	res.send(response)
 })
 
-wss.on('connection', function(ws){
-	let req = {
+wss.on('connection', (ws) => {
+	const req = {	//Fake a request that we would normally see over HTTP
 		originalUrl: '/',
 		pathname: '/',
 		headers: ws.upgradeReq.headers
 	}
-	sessionHandler(req, {}, function(){
-		ws.on('message', function(msg){
+	sessionHandler(req, {}, () => {	//Process session once a client connects
+		ws.on('message', (msg) => {
 			console.log(msg)
 			const parsed = url.parse(msg)
-			processMessage(ws, parsed, req.session)
+			routeMessage(ws, parsed, req.session)
 		})
-
 	})
 })
 
-server.listen(3000, function listening(){
-  console.log('Listening on %d', server.address().port);
-});
-
-
-const processMessage = function(ws, request, session){
+//Simple router
+const routeMessage = (ws, request, session) => {
 	const query = qs.parse(request.query)
+	//The example app only has these functions
 	if(request.pathname === '/add'){
-		addRoute(query, session, function(out){
+		addRoute(query, session, (out) => {
 			ws.send(JSON.stringify(out))
 		})
 	}
 	else if(request.pathname === '/delete'){
-		deleteRoute(query, session, function(out){
+		deleteRoute(query, session, (out) => {
 			ws.send(JSON.stringify(out))
 		})
 	}
-};
+}
 
-const deleteRoute = function (query, session, cb){
-	const filtered = session.todos.filter(function(item){
+//Deleting a todo
+const deleteRoute = (query, session, cb) => {
+	const filtered = session.todos.filter((item) => {
 		return item.id !== parseInt(query.id, 10)
 	})
 	session.todos = filtered
-	session.save(function(){
+	session.save(() => {
 		const response = [{
 			action: 'replace',
 			container: 'lists',
@@ -114,9 +117,10 @@ const deleteRoute = function (query, session, cb){
 		}]
 		cb(response)
 	})
-};
+}
 
-const addRoute = function(query, session, cb){
+//Adding a todo
+const addRoute = (query, session, cb) => {
 	if(!session.todos){
 		session.todos = []
 	}
@@ -126,11 +130,15 @@ const addRoute = function(query, session, cb){
 		reminder: query.reminder
 	}
 	session.todos.push(todo)
-	session.save(function(){
+	session.save(() => {
 		const response = [{
 			action: 'append',
 			container: 'lists',
 			content: '<li class="list-group-item">' + todo.description + ' <button class="pull-right" data-url="/delete?id=' + todo.id + '">Delete</button></li>'
+		},{
+			action: 'replace',
+			container: 'count',
+			content: renderTodoCount(session)
 		}]
 		if(todo.reminder !== '0'){
 			console.log('scheduling reminder')
@@ -138,10 +146,12 @@ const addRoute = function(query, session, cb){
 		}
 		cb(response)
 	})
-};
+}
 
-const sendReminder = function(todo, cb){
-	setTimeout(function(){
+//Send a message back to the client at some point in the future.
+//cb() is the send function on the websocket so we can call it as many times as we need.
+const sendReminder = (todo, cb) => {
+	setTimeout(() => {
 		const reminderResponse = [{
 			action: 'replace',
 			container: 'reminder',
@@ -149,14 +159,21 @@ const sendReminder = function(todo, cb){
 		}]
 		cb(reminderResponse)
 	}, todo.reminder * 1000)
-};
+}
 
-const renderTodos = function(sess){
+//Generate the HTML for all the todos
+const renderTodos = (sess) => {
 	if(!sess.todos){
 		return ''
 	}
-	return sess.todos.reduce(function(acc, todo){
+	return sess.todos.reduce((acc, todo) => {
 		acc += '<li class="list-group-item">' + todo.description + ' <button class="pull-right" data-url="/delete?id=' + todo.id + '">Delete</button></li>'
 		return acc
 	}, '')
+}
+
+//Generate the HTML for the number of todos
+const renderTodoCount = (sess) => {
+	const number = sess.todos ? sess.todos.length : 0
+	return `You have <strong>${number}</strong> todos right now.`
 }

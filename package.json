@@ -1,8 +1,32 @@
 {
+  "name": "tiny-browser-framework",
+  "description": "Minimal Client JS Framework ",
+  "version": "1.0.0",
+  "homepage": "https://github.com/thedumbterminal/TinyBrowserFramework",
+  "author": {
+    "name": "thedumbterminal",
+    "email": "github@thedumbterminal.co.uk",
+    "url": "http://www.thedumbterminal.co.uk"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/thedumbterminal/TinyBrowserFramework.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thedumbterminal/TinyBrowserFramework/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/thedumbterminal/TinyBrowserFramework/blob/master/LICENSE"
+    }
+  ],
   "scripts": {
     "build": "mkdir -p dist && uglifyjs src/index.js -v -o dist/index.js",
     "exampleServer": "nodemon example/server.js",
-    "start": "npm run build && npm run exampleServer"
+    "start": "npm run build && npm run exampleServer",
+    "test": "node -c src/index.js"
   },
   "devDependencies": {
     "compression": "^1.6.2",
