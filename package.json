@@ -1,6 +1,6 @@
 {
   "name": "tiny-browser-framework",
-  "description": "Minimal Client JS Framework ",
+  "description": "Minimal Client JS Framework",
   "version": "1.0.0",
   "homepage": "https://github.com/thedumbterminal/TinyBrowserFramework",
   "author": {
@@ -8,6 +8,7 @@
     "email": "github@thedumbterminal.co.uk",
     "url": "http://www.thedumbterminal.co.uk"
   },
+  "main": "src/index.js",
   "license": "MIT",
   "repository": {
     "type": "git",
