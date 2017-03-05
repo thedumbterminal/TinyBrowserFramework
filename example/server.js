@@ -6,6 +6,8 @@ const url = require('url')
 const qs = require('qs')
 const http = require('http')
 const WebSocket = require('ws')
+//const staticGzip = require('static-gzip')
+var compression = require('compression')
 
 const app = express()
 
@@ -15,6 +17,7 @@ const sessionHandler = session({
 	secret: 'really secure'
 })
 
+app.use(compression())
 app.use(sessionHandler)
 
 const server = http.createServer(app);
@@ -24,7 +27,7 @@ const wss = new WebSocket.Server({
 	path: '/websocket'
 })
 
-app.use(express.static('src'))
+app.use(express.static('dist'))
 
 app.get('/', function(req, res, next){
 	const response = `

@@ -1,5 +1,7 @@
 # Tiny Browser Framework
 
+Tiny browser web framework, which communicates to the server via a websocket. All DOM changes are performed using HTML provided by the server.
+
 ## Specification
 
 ### Client
@@ -10,13 +12,31 @@ Other clickable elements will be augmented if the `data-url` property is set. Th
 
 ### Server
 
-A server must return JSON from GET requests in the following format:
+A server must return JSON from websocket requests in the following format:
 
     [{
     	"action": "append|replace",
     	"container": "ID of container element to update",
     	"content": "HTML string"
     ]}
+
+### Demo
+
+To run the example server use:
+
+    nvm use
+    npm install
+    npm start
+
+Then open [http://localhost:3000/](http://localhost:3000/) in your browser.
+
+This is a simple todo list app, which also supports a reminder for an item.
+
+This example shows the following:
+
+* Using a cookie session with a websocket.
+* Direct DOM change from user action.
+* Indirect DOM change from user action.
 
 ## Compatibility
 
@@ -27,6 +47,4 @@ Browser shims for modern browser functionality are not included in this project.
 
 ## Todo
 
-* Implement more actionable elements, such as images, tick boxes or links etc.
-* Use websocket for all changes.
-* Add example for a related DOM change.
+* Implement more actionable elements, such as images or links etc.
