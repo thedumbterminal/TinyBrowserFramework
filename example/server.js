@@ -39,14 +39,22 @@ app.get('/', function(req, res, next){
 		</head>
 		<body>
 			<div class="container">
-				<h1>Todo Example</h1>
+				<div class="page-header">
+					<h1>Todo Example</h1>
+				</div>
 				<ul id="lists" class="list-group">
 					${renderTodos(req.session)}
 				</ul>
 				<form action="add">
-					<input type="text" name="description" />
+					<div class="form-group">
+						<label>Description</label><input type="text" name="description" />
+					</div>
+					<div class="form-group">
+						<label>Reminder (seconds)</label><input type="range" name="reminder" max="20" value="0"/>
+					</div>
 					<input type="submit" value="Add"/>
 				</form>
+				<div id="reminder" style="margin-top: 10px"></div>
 			</div>
 			<script src="index.js"></script>
 		</body>
@@ -111,7 +119,8 @@ const addRoute = function(query, session, cb){
 	}
 	const todo = {
 		id: (new Date).getTime(),
-		description: query.description
+		description: query.description,
+		reminder: query.reminder
 	}
 	session.todos.push(todo)
 	session.save(function(){
@@ -120,8 +129,23 @@ const addRoute = function(query, session, cb){
 			container: 'lists',
 			content: '<li class="list-group-item">' + todo.description + ' <button class="pull-right" data-url="/delete?id=' + todo.id + '">Delete</button></li>'
 		}]
+		if(todo.reminder !== '0'){
+			console.log('scheduling reminder')
+			sendReminder(todo, cb)
+		}
 		cb(response)
 	})
+};
+
+const sendReminder = function(todo, cb){
+	setTimeout(function(){
+		const reminderResponse = [{
+			action: 'replace',
+			container: 'reminder',
+			content: '<div class="alert alert-info" role="alert" onclick="this.style.display = \'none\';">Reminder for ' + todo.description + '!</div>'
+		}]
+		cb(reminderResponse)
+	}, todo.reminder * 1000)
 };
 
 const renderTodos = function(sess){
