@@ -1,10 +1,21 @@
 # Tiny Browser Framework
 
+[![npm](https://img.shields.io/npm/v/tiny-browser-framework.svg)]()
 [![Build Status](https://travis-ci.org/thedumbterminal/TinyBrowserFramework.svg?branch=master)](https://travis-ci.org/thedumbterminal/TinyBrowserFramework)
 
 Tiny browser web framework, which communicates to the server via a websocket. All DOM changes are performed using HTML provided by the server.
 
 Minified size is 2.25 Kb which when transmitted compressed is 858 Bytes!
+
+## Usage
+
+Install the package:
+
+    npm install tiny-browser-framework
+
+Then create a script tag in your HTML to reference the `src/index.js` file.
+
+See the example for more information.
 
 ## Specification
 
@@ -26,7 +37,7 @@ A server must return JSON from websocket requests in the following format:
 
 As this is an array the server may return 0 or more elements that need to updated.
 
-### Demo
+## Example
 
 To run the example server use:
 
