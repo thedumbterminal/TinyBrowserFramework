@@ -8,6 +8,7 @@ const qs = require('qs')
 const http = require('http')
 const WebSocket = require('ws')
 const compression = require('compression')
+const info = require('../package.json')
 
 const app = express()
 
@@ -19,7 +20,7 @@ const sessionHandler = session({
 
 app.use(compression())
 app.use(sessionHandler)
-app.use(express.static('dist'))
+app.use(express.static('src'))
 
 const server = http.createServer(app)
 
@@ -36,6 +37,7 @@ server.listen(port, () => {
 //Return the starting HTML to the client
 //Just inlined it here as this is just an example server.
 app.get('/', (req, res, next) => {
+	const scriptSrc = process.env.NODE_ENV === 'production' ? `https://unpkg.com/tiny-browser-framework@${info.version}/dist/index.min.js` : 'index.js'
 	const response = `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -66,7 +68,7 @@ app.get('/', (req, res, next) => {
 				</form>
 				<div id="reminder" style="margin-top: 10px"></div>
 			</div>
-			<script src="index.min.js"></script>
+			<script src="${scriptSrc}"></script>
 		</body>
 	</html>
 	`
