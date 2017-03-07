@@ -70,15 +70,9 @@ An example of this is:
 
 The above example would add another child to the element with the ID of "todos" and replace the contents of the element with the ID of "numTodos".
 
-## Working example using node.js express server
+## Live demo
 
-To run the example server use:
-
-    nvm use
-    npm install
-    npm start
-
-Then open [http://localhost:3000/](http://localhost:3000/) in your browser.
+[https://tiny-browser-framework.herokuapp.com/](https://tiny-browser-framework.herokuapp.com/)
 
 This is a simple todo list app, which also supports a reminder for an item.
 
@@ -98,6 +92,16 @@ Install the package:
 Then create a script tag in your HTML to reference the `src/index.js` file.
 
 See the [example directory](example/) for more information.
+
+### Included node.js express server example
+
+To run the example server use:
+
+    nvm use
+    npm install
+    npm start
+
+Then open [http://localhost:3000/](http://localhost:3000/) in your browser.
 
 ## Compatibility
 

@@ -6,8 +6,8 @@ var TBF = function(){
 };
 
 TBF.prototype._setupWebsocket = function(){
-	var socketProto = window.location.protocol.replace('http', 'ws');
-	this._websocket = new WebSocket(socketProto + '//' + window.location.host + '/websocket');
+	var socketUrl = window.location.protocol.replace('http', 'ws') + '//' + window.location.host + '/websocket';
+	this._websocket = new WebSocket(socketUrl);
 	var self = this;
 	this._websocket.onmessage = function(event){
 		var jsons = JSON.parse(event.data);
@@ -57,7 +57,6 @@ TBF.prototype._augmentForm = function(ele){
 
 TBF.prototype._elementActivated = function(ele){
 	console.log('element activated:', ele);
-	var self = this;
 	this._websocket.send(this._getActionURL(ele));
 };
 
