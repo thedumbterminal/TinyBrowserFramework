@@ -117,6 +117,10 @@ const deleteRoute = (query, session, cb) => {
 			action: 'replace',
 			container: 'lists',
 			content: renderTodos(session)
+		},{
+			action: 'replace',
+			container: 'count',
+			content: renderTodoCount(session)
 		}]
 		cb(response)
 	})
