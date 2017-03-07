@@ -6,7 +6,7 @@ var TBF = function(){
 };
 
 TBF.prototype._setupWebsocket = function(){
-	this._websocket = new WebSocket('ws://localhost:3000/websocket');
+	this._websocket = new WebSocket('ws://' + window.location.host + '/websocket');
 	var self = this;
 	this._websocket.onmessage = function(event){
 		var jsons = JSON.parse(event.data);

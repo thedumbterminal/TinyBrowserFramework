@@ -9,15 +9,34 @@ Minified size is 2.25 Kb which when transmitted compressed is 858 Bytes!
 
 ## Usage
 
-Install the package:
+Add the following script tag at the bottom of your HTML as follows:
 
-    npm install tiny-browser-framework
+    <script src="https://unpkg.com/tiny-browser-framework/dist/index.min.js"></script>
 
-Then create a script tag in your HTML to reference the `src/index.js` file.
+Then add `data-url` attributes to any buttons on your pages, the value of this would be the data that will be sent over the websocket to the server to process.
 
-See the example for more information.
+    <button data-url="/something?a=b">An example button</button>
+
+No change is required for any forms present on your pages.
+
+Full example HTML available at [example/example.html](example/example.html).
 
 ## Specification
+
+The server does all the heavy lifting and the browser is just used for updating fragments of HTML on the page, which keeps the clientside logic minimal.
+
+Any state, authentication or persistence is not a concern of this client framework, these can also be managed by the server, but might involve a client side element such as setting cookies or using other JS libs for OAuth etc.
+
+Data is sent to the server when an augmented element on the page is triggered, the server may then response with zero or more fragments of HTML to update the page.
+
+The server may also return HTML fragments to the client based on server events rather than user actions, possible scenarios for this could be:
+
+* Message received from pub/sub topic.
+* Time based logic.
+* Server state change, such as a multi-user system.
+* Long running job finishes, such as encoding an uploaded video.
+
+This means that the browser does not need to wait for the server to return a final response. It could return a number of fragments in a timely manner to provide a helpful UI until a long operation finishes.
 
 ### Client
 
@@ -27,7 +46,7 @@ Other clickable elements will be augmented if the `data-url` property is set. Th
 
 ### Server
 
-A server must return JSON from websocket requests in the following format:
+A server must return JSON from websocket requests to `/websocket` in the following format:
 
     [{
     	"action": "append|replace",
@@ -35,9 +54,23 @@ A server must return JSON from websocket requests in the following format:
     	"content": "HTML string"
     }]
 
-As this is an array the server may return 0 or more elements that need to updated.
+As this is an array the server may return 0 or more elements that need to updated at once.
 
-## Example
+An example of this is:
+
+    [{
+    	"action": "append",
+    	"container": "todos",
+    	"content": "<li>Another todo</li>"
+    }, {
+    	"action": "replace",
+    	"container": "numTodos",
+    	"content": "You have <b>5</b> todos."
+    }]
+
+The above example would add another child to the element with the ID of "todos" and replace the contents of the element with the ID of "numTodos".
+
+## Working example using node.js express server
 
 To run the example server use:
 
@@ -56,16 +89,28 @@ This example shows the following:
 * Indirect DOM change from user action.
 * DOM change via timed event.
 
+## Developing
+
+Install the package:
+
+    npm install tiny-browser-framework
+
+Then create a script tag in your HTML to reference the `src/index.js` file.
+
+See the [example directory](example/) for more information.
+
 ## Compatibility
 
 Browser shims for modern browser functionality are not included in this project.
 
 The following would be required:
 
-* Array.prototype.forEach
-* Websockets
+* [Array.prototype.forEach](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
+* [Websockets](https://github.com/Modernizr/Modernizr/wiki/HTML5-Cross-Browser-Polyfills#web-sockets)
 
 ## Todo
 
 * Implement more actionable elements, such as images or links etc.
+* Implement more ways to trigger an element such as `onblur`, `onfocus`, `onscroll` etc.
+* Remove dependency on Array.prototype.forEach.
 
