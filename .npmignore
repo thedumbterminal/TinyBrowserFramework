@@ -1,0 +1,4 @@
+.npmignore
+.nvmrc
+.settings
+.travis.yml

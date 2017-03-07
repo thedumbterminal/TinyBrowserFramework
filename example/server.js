@@ -65,7 +65,7 @@ app.get('/', (req, res, next) => {
 				</form>
 				<div id="reminder" style="margin-top: 10px"></div>
 			</div>
-			<script src="index.js"></script>
+			<script src="index.min.js"></script>
 		</body>
 	</html>
 	`

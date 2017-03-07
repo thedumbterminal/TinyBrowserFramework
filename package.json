@@ -1,7 +1,7 @@
 {
   "name": "tiny-browser-framework",
   "description": "Minimal Client JS Framework",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/thedumbterminal/TinyBrowserFramework",
   "author": {
     "name": "thedumbterminal",
@@ -24,7 +24,7 @@
     }
   ],
   "scripts": {
-    "build": "mkdir -p dist && uglifyjs src/index.js -v -o dist/index.js",
+    "build": "mkdir -p dist && uglifyjs src/index.js -v -o dist/index.min.js",
     "exampleServer": "nodemon example/server.js",
     "start": "npm run build && npm run exampleServer",
     "test": "node -c src/index.js"
