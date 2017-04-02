@@ -15,6 +15,9 @@ TBF.prototype._setupWebsocket = function(){
 			self._handleResponse(json);
 		})
 	};
+	window.onbeforeunload = function(){
+		self._websocket.close();
+	};
 };
 
 TBF.prototype._augmentInterface = function(){
@@ -24,7 +27,7 @@ TBF.prototype._augmentInterface = function(){
 	}
 	tags = document.getElementsByTagName('FORM');
 	for(var i = 0; i < tags.length; i++){
-		this._augmentForm(tags.item(i))
+		this._augmentForm(tags.item(i));
 	}
 
 };
