@@ -24,7 +24,7 @@
     }
   ],
   "scripts": {
-    "build": "mkdir -p dist && uglifyjs src/index.js -v -o dist/index.min.js",
+    "build": "mkdir -p dist && uglifyjs src/index.js -m -v -o dist/index.min.js",
     "exampleServer": "nodemon example/server.js",
     "start": "npm run build && npm run exampleServer",
     "test": "node -c src/index.js"
