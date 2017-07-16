@@ -11,9 +11,7 @@ TBF.prototype._setupWebsocket = function(){
 	var self = this;
 	this._websocket.onclose = function(event){
 		setTimeout(function(){
-			if(self._websocket.readyState > 1){
-				self._setupWebsocket();
-			}
+			self._websocket.readyState > 1 && self._setupWebsocket();
 		}, 1000)
 	}
 	this._websocket.onmessage = function(event){
