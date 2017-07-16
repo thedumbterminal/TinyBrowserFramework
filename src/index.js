@@ -9,6 +9,11 @@ TBF.prototype._setupWebsocket = function(){
 	var socketUrl = window.location.protocol.replace('http', 'ws') + '//' + window.location.host + '/websocket';
 	this._websocket = new WebSocket(socketUrl);
 	var self = this;
+	this._websocket.onclose = function(event){
+		setTimeout(function(){
+			self._websocket.readyState > 1 && self._setupWebsocket();
+		}, 1000)
+	}
 	this._websocket.onmessage = function(event){
 		var jsons = JSON.parse(event.data);
 		jsons.forEach(function(json){
@@ -24,9 +29,8 @@ TBF.prototype._augmentInterface = function(){
 	}
 	tags = document.getElementsByTagName('FORM');
 	for(var i = 0; i < tags.length; i++){
-		this._augmentForm(tags.item(i))
+		this._augmentForm(tags.item(i));
 	}
-
 };
 
 TBF.prototype._augmentButton = function(ele){
@@ -105,6 +109,9 @@ TBF.prototype._setupListeners = function(){
 	document.addEventListener('DOMSubtreeModified', function(event) {
 		self._augmentInterface();
 	});
+	window.onbeforeunload = function(){
+		self._websocket && self._websocket.close();
+	};
 };
 
 window.tbfInstance = new TBF();
