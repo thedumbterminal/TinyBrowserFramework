@@ -75,11 +75,11 @@ app.get('/', (req, res, next) => {
 	res.send(response)
 })
 
-wss.on('connection', (ws) => {
+wss.on('connection', (ws, upgradeReq) => {
 	const req = {	//Fake a request that we would normally see over HTTP
 		originalUrl: '/',
 		pathname: '/',
-		headers: ws.upgradeReq.headers
+		headers: upgradeReq.headers
 	}
 	sessionHandler(req, {}, () => {	//Process session once a client connects
 		ws.on('message', (msg) => {
