@@ -26,7 +26,8 @@
   "scripts": {
     "build": "mkdir -p dist && uglifyjs src/index.js -m -v -o dist/index.min.js",
     "start": "nodemon example/server.js",
-    "test": "node -c src/index.js"
+    "test": "node -c src/index.js",
+    "ci": "npm run build && npm test"
   },
   "devDependencies": {
     "compression": "^1.6.2",
