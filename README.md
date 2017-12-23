@@ -116,5 +116,4 @@ The following would be required:
 
 * Implement more actionable elements, such as images or links etc.
 * Implement more ways to trigger an element such as `onblur`, `onfocus`, `onscroll` etc.
-* Remove dependency on Array.prototype.forEach.
 
