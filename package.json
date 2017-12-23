@@ -24,7 +24,7 @@
     }
   ],
   "scripts": {
-    "build": "mkdir -p dist && uglifyjs src/index.js -m -v -o dist/index.min.js",
+    "build": "mkdir -p dist && uglifyjs --mangle --compress -o dist/index.min.js src/index.js && ls -al dist/index.min.js",
     "start": "nodemon example/server.js",
     "test": "node -c src/index.js",
     "ci": "npm run build && npm test"

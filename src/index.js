@@ -43,10 +43,7 @@ TBF.prototype._augmentInterface = function(){
 };
 
 TBF.prototype._augmentDiv = function(ele){
-	if(!ele.dataset.url){
-		return;
-	}
-	if(ele.dataset.actioned){	// already done
+	if(!ele.dataset.url || ele.dataset.actioned){	// not supported or already done
 		return;
 	}
 	console.log('augmenting div: ', ele);
@@ -55,10 +52,7 @@ TBF.prototype._augmentDiv = function(ele){
 };
 
 TBF.prototype._augmentButton = function(ele){
-	if(!ele.dataset.url){
-		return;
-	}
-	if(ele.onclick){	// already done
+	if(!ele.dataset.url || ele.onclick){	// not supported or already done
 		return;
 	}
 	console.log('augmenting button: ', ele);
@@ -123,10 +117,10 @@ TBF.prototype._handleResponse = function(json){
 
 TBF.prototype._setupListeners = function(){
 	var self = this;
-	document.addEventListener('DOMContentLoaded', function(event) {
+	document.addEventListener('DOMContentLoaded', function() {
 		self._augmentInterface();
 	});
-	document.addEventListener('DOMSubtreeModified', function(event) {
+	document.addEventListener('DOMSubtreeModified', function() {
 		self._augmentInterface();
 	});
 	window.onbeforeunload = function(){
