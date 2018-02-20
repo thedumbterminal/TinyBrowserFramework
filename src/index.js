@@ -12,13 +12,13 @@ TBF.prototype._setupWebsocket = function(){
 	this._websocket.onclose = function(event){
 		setTimeout(function(){
 			self._websocket.readyState > 1 && self._setupWebsocket();
-		}, 1000)
+		}, 1000);
 	}
 	this._websocket.onmessage = function(event){
 		var jsons = JSON.parse(event.data);
 		jsons.forEach(function(json){
 			self._handleResponse(json);
-		})
+		});
 	};
 };
 
@@ -103,10 +103,10 @@ TBF.prototype._handleResponse = function(json){
 
 TBF.prototype._setupListeners = function(){
 	var self = this;
-	document.addEventListener('DOMContentLoaded', function(event) {
+	document.addEventListener('DOMContentLoaded', function() {
 		self._augmentInterface();
 	});
-	document.addEventListener('DOMSubtreeModified', function(event) {
+	document.addEventListener('DOMSubtreeModified', function() {
 		self._augmentInterface();
 	});
 	window.onbeforeunload = function(){
