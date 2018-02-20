@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.1.1
+(20/02/2018)
+
+* Updating dependencies.
+* Improved JS minification.
+
 ## v1.1.0
 (16/07/2017)
 
