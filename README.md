@@ -5,7 +5,7 @@
 
 Tiny browser web framework, which communicates to the server via a websocket. All DOM changes are performed using HTML provided by the server.
 
-Minified size is **2.56** Kb which when transmitted compressed is **1.29** Kb!
+Minified size is **2.23** Kb which when transmitted compressed is less than 1Kb!
 
 ## Usage
 
