@@ -53,6 +53,7 @@ app.get('/', (req, res, next) => {
 				<div class="page-header">
 					<h1>Todo Example</h1>
 				</div>
+				<div id="intro" data-url="/intro"></div>
 				<div id="count">${renderTodoCount(req.session)}</div>
 				<ul id="lists" class="list-group">
 					${renderTodos(req.session)}
@@ -94,16 +95,30 @@ wss.on('connection', (ws, upgradeReq) => {
 const routeMessage = (ws, request, session) => {
 	const query = qs.parse(request.query)
 	//The example app only has these functions
+	const outputCallback = (out) => {
+		ws.send(JSON.stringify(out))
+	}
+
 	if(request.pathname === '/add'){
-		addRoute(query, session, (out) => {
-			ws.send(JSON.stringify(out))
-		})
+		addRoute(query, session, outputCallback)
 	}
 	else if(request.pathname === '/delete'){
-		deleteRoute(query, session, (out) => {
-			ws.send(JSON.stringify(out))
-		})
+		deleteRoute(query, session, outputCallback)
 	}
+	else if(request.pathname === '/intro'){
+		introRoute(query, session, outputCallback)
+	}
+}
+
+//Display intro message
+const introRoute = (query, session, cb) => {
+	setTimeout(() => {	// Add a delay to highlight the content being loaded without user interaction
+		cb([{
+			action: 'replace',
+			container: 'intro',
+			content: '<h3>Just use the form below to add a todo<h3>'
+		}])
+	}, 2000)
 }
 
 //Deleting a todo
