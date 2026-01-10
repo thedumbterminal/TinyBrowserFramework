@@ -9,11 +9,14 @@ TBF.prototype._setupWebsocket = function(){
 	var socketUrl = window.location.protocol.replace('http', 'ws') + '//' + window.location.host + '/websocket';
 	this._websocket = new WebSocket(socketUrl);
 	var self = this;
-	this._websocket.onclose = function(event){
+	this._websocket.onopen = function(){
+		self._augmentInterface();
+	};
+	this._websocket.onclose = function(){
 		setTimeout(function(){
 			self._websocket.readyState > 1 && self._setupWebsocket();
 		}, 1000);
-	}
+	};
 	this._websocket.onmessage = function(event){
 		var jsons = JSON.parse(event.data);
 		jsons.forEach(function(json){
@@ -31,13 +34,25 @@ TBF.prototype._augmentInterface = function(){
 	for(var i = 0; i < tags.length; i++){
 		this._augmentForm(tags.item(i));
 	}
+	if(this._websocket.readyState === 1){	// only do this if we have a working web socket
+		tags = document.getElementsByTagName('DIV');
+		for(var i = 0; i < tags.length; i++){
+			this._augmentDiv(tags.item(i));
+		}
+	}
+};
+
+TBF.prototype._augmentDiv = function(ele){
+	if(!ele.dataset.url || ele.dataset.actioned){	// not supported or already done
+		return;
+	}
+	console.log('augmenting div: ', ele);
+	ele.dataset.actioned = 1;
+	this._elementActivated(ele);	// activate immediately
 };
 
 TBF.prototype._augmentButton = function(ele){
-	if(!ele.dataset.url){
-		return;
-	}
-	if(ele.onclick){	// already done
+	if(!ele.dataset.url || ele.onclick){	// not supported or already done
 		return;
 	}
 	console.log('augmenting button: ', ele);
@@ -65,10 +80,10 @@ TBF.prototype._elementActivated = function(ele){
 };
 
 TBF.prototype._getActionURL = function(ele){
-	if(ele.tagName === 'BUTTON'){
+	if(['BUTTON', 'DIV'].indexOf(ele.tagName) !== -1){
 		return ele.dataset.url;
 	}
-	else if(ele.tagName === 'FORM'){
+	if(ele.tagName === 'FORM'){
 		var kvPairs = [];
 		for(var i = 0; i < ele.elements.length; i++){
 			var e = ele.elements[i];
@@ -81,7 +96,6 @@ TBF.prototype._getActionURL = function(ele){
 };
 
 TBF.prototype._handleResponse = function(json){
-	console.log('got json:', json);
 	var container = document.getElementById(json.container);
 	if(!container){
 		throw new Error('container not found: ' + json.container);
