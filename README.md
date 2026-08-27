@@ -44,6 +44,8 @@ Forms are augmented automatically using their action URLs.
 
 Other clickable elements will be augmented if the `data-url` property is set. The value is the server URL where a GET request to handle the action resides.
 
+DIV elements can also be augmented to allow the client to drive automatic loading of content, for example if more complex JS is also present on the page that requires this functionality.
+
 ### Server
 
 A server must return JSON from websocket requests to `/websocket` in the following format:
@@ -82,6 +84,7 @@ This example shows the following:
 * Direct DOM change from user action.
 * Indirect DOM change from user action.
 * DOM change via timed event.
+* DOM change from non user action.
 
 ## Developing
 
